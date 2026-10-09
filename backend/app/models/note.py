@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, ForeignKey,DateTime,func
 from sqlalchemy.orm import relationship, DeclarativeBase,Mapped,mapped_column
-from base import Base
+from backend.app.core.base import Base
 from user import User
 from workspace import WorkSpace
 from datetime import datetime,UTC
@@ -13,11 +13,11 @@ class Note(Base):
     author_id: Mapped[int]=mapped_column(Integer,ForeignKey("users.id"))
     title:Mapped[str] = mapped_column(String(150),nullable=False)
     content:Mapped[str] = mapped_column(String,nullable=False)
-    created_at:Mapped[datetime] = mapped_column()
-    updated_at:Mapped[datetime] = mapped_column()
+    created_at:Mapped[datetime] = mapped_column(DateTime(timezone=True),nullable=False,server_default=func.now())
+    updated_at:Mapped[datetime] = mapped_column(DateTime(timezone=True),nullable=False,server_default=func.now(),onupdate=func.now())
     
-    workspace: Mapped["WorkSpace"] = relationship(
-        back_populates="notes"
+    workspace_note: Mapped["WorkSpace"] = relationship(
+        back_populates="notes",
     )
     author:Mapped["User"] = relationship(back_populates="user")
     
