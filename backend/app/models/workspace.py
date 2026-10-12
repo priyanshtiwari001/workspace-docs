@@ -1,10 +1,14 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Column, Integer, String, Text, ForeignKey,DateTime,func
 from sqlalchemy.orm import relationship,Mapped,mapped_column
-from backend.app.core.base import Base
-from note import Note
-from user import User
+from ..core.base import Base
 from datetime import datetime,UTC
 
+if TYPE_CHECKING:
+    from .workspace_member import WorkspaceMember
+    from .user import User
+    from .note import Note
 class WorkSpace(Base):
     __tablename__ = "workspaces"
     
@@ -14,5 +18,9 @@ class WorkSpace(Base):
     created_at:Mapped[datetime] = mapped_column(DateTime(timezone=True),nullable=False,server_default=func.now())
     updated_at:Mapped[datetime] = mapped_column(DateTime(timezone=True),nullable=False,server_default=func.now(),onupdate=func.now())
     
-    notes:Mapped[list["Note"]] = relationship(back_populates="workspace")
-    created_by_user:Mapped["User"] = relationship(back_populates="user_workspace")
+    notes:Mapped[list["Note"]] = relationship("Note", back_populates="workspace_note")
+    created_by_user:Mapped["User"] = relationship("User", back_populates="user_workspace")
+    workspace_members: Mapped[list["WorkspaceMember"]] = relationship(
+    "WorkspaceMember",
+    back_populates="workspace"
+    )

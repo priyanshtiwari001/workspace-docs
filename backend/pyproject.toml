@@ -3,10 +3,12 @@ name = "workspace-docs"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "aiosqlite>=0.22.1",
     "alembic>=1.20.0",
     "argon2-cffi>=25.1.0",
     "asyncpg>=0.31.0",
     "fastapi[standard]>=0.142.2",
+    "greenlet>=3.5.6",
     "pwdlib[argon2]>=0.3.1",
     "pydantic-settings>=2.15.0",
     "pyjwt>=2.15.1",

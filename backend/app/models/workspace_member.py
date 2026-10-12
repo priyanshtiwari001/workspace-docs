@@ -1,12 +1,14 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from backend.app.core.base import Base
+from ..core.base import Base
 from sqlalchemy import DateTime, ForeignKey, Integer, String, func,Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from user import User
-from workspace import WorkSpace
 from ..schemas.schemas import Roles as EnumRoles
 
+if TYPE_CHECKING:
+    from .user import User
+    from .workspace import WorkSpace
 class WorkspaceMember(Base):
     __tablename__ = "workspace_members"
     id:Mapped[int]=mapped_column(Integer,autoincrement=True,primary_key=True)
@@ -17,8 +19,8 @@ class WorkspaceMember(Base):
     updated_at:Mapped[datetime] = mapped_column(DateTime(timezone=True),nullable=False,server_default=func.now(),onupdate=func.now())
     
 
-    workspace_member:Mapped["WorkSpace"] = relationship(back_populates="workspace_members")
-    user:Mapped["User"] = relationship(back_populates="user_workspace_members")
+    workspace:Mapped["WorkSpace"] = relationship("WorkSpace",back_populates="workspace_members")
+    user_workspace_member:Mapped["User"] = relationship("User", back_populates="user_workspace_members")
     
     
     

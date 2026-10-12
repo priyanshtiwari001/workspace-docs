@@ -1,10 +1,12 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey,DateTime,func
-from sqlalchemy.orm import relationship, DeclarativeBase,Mapped,mapped_column
-from backend.app.core.base import Base
-from user import User
-from workspace import WorkSpace
+from typing import TYPE_CHECKING
+from sqlalchemy.orm import relationship,Mapped,mapped_column
+from ..core.base import Base
 from datetime import datetime,UTC
 
+if TYPE_CHECKING:
+    from .user import User
+    from .workspace import WorkSpace
 class Note(Base):
     __tablename__ = "notes"
     
@@ -19,5 +21,5 @@ class Note(Base):
     workspace_note: Mapped["WorkSpace"] = relationship(
         back_populates="notes",
     )
-    author:Mapped["User"] = relationship(back_populates="user")
+    author:Mapped["User"] = relationship("User",back_populates="user")
     
