@@ -30,10 +30,9 @@ class UserCreate(UserPrivate):
     password: str
     full_name: str
 
-
+    
 class UserResponse(UserBase):
     id: int
-    is_active: bool
     full_name: str
     model_config = ConfigDict(from_attributes=True)
 
@@ -56,4 +55,22 @@ class TokenReponse(BaseModel):
 
 
 class WorkSpaceBase(BaseModel):
+    id: int | None = None
     name: str = Field(min_length=1, max_length=50)
+    model_config = ConfigDict(from_attributes=True)
+
+
+class NoteBase(BaseModel):
+
+    title: str = Field(min_length=1, max_length=50)
+    content: str = Field(min_length=1, max_length=500)
+    workspace_id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class NoteResponse(NoteBase):
+    id: int | None = None
+    workspace_note: WorkSpaceBase 
+    author: UserResponse # if you different name use the this approach user: UserResponse = Field(validation_alias="author")
+    model_config = ConfigDict(from_attributes=True)
+    

@@ -21,6 +21,7 @@ async def create_workspace(
     new_workspace = WorkSpace(name=data.name, created_by=int(current_user))
     res = await workspace_service.create_workspace(new_workspace)
     await db.commit()
+    await db.refresh(res,attribute_names=["created_by_user"])
     return res
 
 
@@ -32,6 +33,7 @@ async def get_all_workspaces(
 ):
     res = await workspace_service.get_all_workspaces()
     await db.commit()
+    await db.refresh(res)
     return res
 
 
@@ -44,6 +46,7 @@ async def get_workspace(
 ):
     res = await workspace_service.get_workspaces(workspace_id)
     await db.commit()
+    await db.refresh(res)
     return res
 
 
