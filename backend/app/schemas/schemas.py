@@ -64,13 +64,17 @@ class NoteBase(BaseModel):
 
     title: str = Field(min_length=1, max_length=50)
     content: str = Field(min_length=1, max_length=500)
+
+    model_config = ConfigDict(from_attributes=True)
+
+class NoteCreate(NoteBase):
     workspace_id: int
     model_config = ConfigDict(from_attributes=True)
 
-
 class NoteResponse(NoteBase):
     id: int | None = None
-    workspace_note: WorkSpaceBase 
-    author: UserResponse # if you different name use the this approach user: UserResponse = Field(validation_alias="author")
+    workspace_note: WorkSpaceBase | None 
+    author: UserResponse | None # if you different name use the this approach user: UserResponse = Field(validation_alias="author")
     model_config = ConfigDict(from_attributes=True)
-    
+
+

@@ -21,5 +21,9 @@ class Note(Base):
     workspace_note: Mapped["WorkSpace"] = relationship(
         back_populates="notes",
     )
-    author:Mapped["User"] = relationship("User",back_populates="user")
+    author:Mapped["User"] = relationship("User",back_populates="notes")
+
+
+    def __repr__(self):
+        return f"Note(id={self.id}, title={self.title}, workspace_id={self.workspace_id}, author_id={self.author_id})"
     

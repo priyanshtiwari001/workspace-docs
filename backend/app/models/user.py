@@ -45,7 +45,7 @@ class User(Base):
         back_populates="user_refresh_tokens"
     )
     
-    user: Mapped[list["Note"]] = relationship(
+    notes: Mapped[list["Note"]] = relationship(
             "Note",
             back_populates="author"
 )
