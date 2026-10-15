@@ -68,7 +68,6 @@ class NoteBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class NoteCreate(NoteBase):
-    workspace_id: int
     model_config = ConfigDict(from_attributes=True)
 
 class NoteResponse(NoteBase):
