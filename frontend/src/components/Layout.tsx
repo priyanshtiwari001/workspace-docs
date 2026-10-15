@@ -39,7 +39,14 @@ export const Layout = () => {
               to="/"
               className="rounded-lg px-3 py-2 font-medium text-slate-900 transition hover:bg-slate-100 hover:text-slate-900"
             >
-              Workspace
+              Workspaces
+            </Link>
+            <Link
+              to="/workspaces/create"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-indigo-600 hover:bg-indigo-50 font-medium transition"
+            >
+              <span className="text-base leading-none font-bold">+</span>
+              <span>Create Workspace</span>
             </Link>
             <Link
               to="/members"

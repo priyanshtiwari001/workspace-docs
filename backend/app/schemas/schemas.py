@@ -12,6 +12,7 @@ class Roles(str, Enum):
     EDITOR = "editor"
 
 
+
 class UserBase(BaseModel):
     email: EmailStr
 
@@ -55,11 +56,19 @@ class TokenReponse(BaseModel):
 
 
 class WorkSpaceBase(BaseModel):
-    id: int | None = None
     name: str = Field(min_length=1, max_length=50)
     model_config = ConfigDict(from_attributes=True)
 
+class WorkSpaceMemberBase(BaseModel):
+    role:str
+    model_config = ConfigDict(from_attributes=True)
 
+class WorkSpaceResponse(WorkSpaceBase):
+    id: int
+    created_by_user:UserResponse
+    # workspace_members:list[WorkSpaceMemberBase]
+    model_config = ConfigDict(from_attributes=True)
+    
 class NoteBase(BaseModel):
 
     title: str = Field(min_length=1, max_length=50)

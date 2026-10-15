@@ -1,17 +1,19 @@
+from app.schemas.schemas import SuccessResponse
 from fastapi import APIRouter, Depends
-from ..schemas.schemas import WorkSpaceBase
+from ..schemas.schemas import WorkSpaceBase,WorkSpaceResponse
 from ..core.databases import get_db
 from typing import Annotated
 from ..services import WorkSpaceService
 from ..models import WorkSpace
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from ..core.dependencies import get_workspace_service, get_current_user
 
 
 router = APIRouter(prefix="/workspaces")
 
 
-@router.post("")
+@router.post("",response_model=SuccessResponse[WorkSpaceResponse])
 async def create_workspace(
     data: WorkSpaceBase,
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -22,10 +24,11 @@ async def create_workspace(
     res = await workspace_service.create_workspace(new_workspace)
     await db.commit()
     await db.refresh(res,attribute_names=["created_by_user"])
-    return res
+    return SuccessResponse(data=res)
 
 
-@router.get("/")
+
+@router.get("/",response_model=SuccessResponse[list[WorkSpaceResponse]])
 async def get_all_workspaces(
     db: Annotated[AsyncSession, Depends(get_db)],
     workspace_service: Annotated[WorkSpaceService, Depends(get_workspace_service)],
@@ -33,8 +36,9 @@ async def get_all_workspaces(
 ):
     res = await workspace_service.get_all_workspaces()
     await db.commit()
-    await db.refresh(res)
-    return res
+    # workspaces = WorkSpaceResponse.model_validate(res).model_dump()
+    # await db.refresh(res)
+    return SuccessResponse(data=res,message="Workspace fetched successfully")
 
 
 @router.get("/{workspace_id}")
