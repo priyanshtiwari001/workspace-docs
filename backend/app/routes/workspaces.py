@@ -40,6 +40,17 @@ async def get_all_workspaces(
     # await db.refresh(res)
     return SuccessResponse(data=res,message="Workspace fetched successfully")
 
+@router.get("/profile",response_model=SuccessResponse[list[WorkSpaceResponse]])
+async def get_workspace_by_profile(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    workspace_service: Annotated[WorkSpaceService, Depends(get_workspace_service)],
+    current_user: Annotated[str, Depends(get_current_user)],
+):
+    res = await workspace_service.get_workspace_by_profile(current_user)
+    await db.commit()
+    return SuccessResponse(data=res,message="Workspace fetched successfully")
+
+
 
 @router.get("/{workspace_id}")
 async def get_workspace(
@@ -48,7 +59,7 @@ async def get_workspace(
     workspace_service: Annotated[WorkSpaceService, Depends(get_workspace_service)],
     current_user: Annotated[str, Depends(get_current_user)],
 ):
-    res = await workspace_service.get_workspaces(workspace_id)
+    res = await workspace_service.get_workspaces(workspace_id,current_user)
     await db.commit()
     await db.refresh(res)
     return res
@@ -62,7 +73,7 @@ async def update_workspace(
     workspace_service: Annotated[WorkSpaceService, Depends(get_workspace_service)],
     current_user: Annotated[str, Depends(get_current_user)],
 ):
-    res = await workspace_service.update_workspace(workspace_id, data.model_dump())
+    res = await workspace_service.update_workspace(workspace_id, current_user, data.model_dump())
     await db.commit()
     return res
 
@@ -74,6 +85,6 @@ async def delete_workspace(
     workspace_service: Annotated[WorkSpaceService, Depends(get_workspace_service)],
     current_user: Annotated[str, Depends(get_current_user)],
 ):
-    res = await workspace_service.delete_workspace(workspace_id)
+    res = await workspace_service.delete_workspace(workspace_id,current_user)
     await db.commit()
     return res

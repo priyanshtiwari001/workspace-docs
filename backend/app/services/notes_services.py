@@ -57,8 +57,10 @@ class NotesService:
         note = res.scalar_one_or_none()
         if note is None:
             raise AppException(f"No note found with this id {id} in this workspace")
-        note.title = data.get("title")
-        note.content = data.get("content")
+        if data.get("title") is not None:
+            note.title = data["title"]
+        if data.get("content") is not None:            
+            note.content = data["content"]
         return note
 
     async def delete_notes(self,id,workspace_id):

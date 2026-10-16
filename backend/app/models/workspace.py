@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from .workspace_member import WorkspaceMember
     from .user import User
     from .note import Note
+
 class WorkSpace(Base):
     __tablename__ = "workspaces"
     
@@ -22,5 +23,10 @@ class WorkSpace(Base):
     created_by_user:Mapped["User"] = relationship("User", back_populates="user_workspace")
     workspace_members: Mapped[list["WorkspaceMember"]] = relationship(
     "WorkspaceMember",
-    back_populates="workspace"
+    back_populates="workspace",
+     cascade="all, delete-orphan",
     )
+    
+    
+    def __abs__(self):
+        return f"WorkSpace(id={self.id}, name={self.name}, created_by={self.created_by})"

@@ -63,6 +63,11 @@ class WorkSpaceMemberBase(BaseModel):
     role:str
     model_config = ConfigDict(from_attributes=True)
 
+
+class WorkSpaceMemberResponse(WorkSpaceMemberBase):
+    id: int
+    user_workspace_member: UserResponse
+    model_config = ConfigDict(from_attributes=True)
 class WorkSpaceResponse(WorkSpaceBase):
     id: int
     created_by_user:UserResponse

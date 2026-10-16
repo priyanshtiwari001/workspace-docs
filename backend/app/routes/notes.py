@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
-from ..schemas.schemas import NoteBase, SuccessResponse,NoteResponse,NoteCreate
+from ..schemas.schemas import NoteBase, SuccessResponse,NoteResponse,NoteCreate,Roles
 from ..core.databases import get_db
 from typing import Annotated
 from ..services import NotesService
 from ..core.dependencies import get_notes_service, get_current_user
 from sqlalchemy.ext.asyncio import AsyncSession
+from ..core.exception import AppException
 
 
 router = APIRouter(prefix="/workspace/{workspace_id}")
@@ -17,10 +18,17 @@ async def create_note(
     data: NoteCreate,
     db: Annotated[AsyncSession, Depends(get_db)],
     notes_service: Annotated[NotesService, Depends(get_notes_service)],
-    current_user: Annotated[str, Depends(get_current_user)],
+    current_user: Annotated[int, Depends(get_current_user)],
 ):
+    owner = await notes_service.workspace_repo.get_member(workspace_id,current_user)
+    if owner is None:
+        raise AppException(message="User is not a member of this workspace")
+    
+    if owner.role != Roles.OWNER and owner.role != Roles.EDITOR:
+        raise AppException(message=f"User is not authorized to create note in this workspace. You have {owner.role.value} role")
+
     res = await notes_service.create_note(data,current_user,workspace_id)
-    await db.commit()
+    # await db.commit()
     notes = NoteResponse.model_validate(res).model_dump()
    
     return SuccessResponse(data=notes, message="Note created successfully")

@@ -23,6 +23,9 @@ class WorkspaceMember(Base):
     user_workspace_member:Mapped["User"] = relationship("User", back_populates="user_workspace_members")
     
     
+    def __repr__(self):
+        return f"WorkspaceMember(id={self.id}, workspace_id={self.workspace_id}, user_id={self.user_id}, role={self.role})"
+    
     
     
     

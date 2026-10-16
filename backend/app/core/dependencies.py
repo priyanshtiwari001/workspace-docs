@@ -16,12 +16,6 @@ def get_workspace_repository(
     return WorkSpaceRepository(db)
 
 
-def get_workspace_service(
-    workspace_service: Annotated[
-        WorkSpaceRepository, Depends(get_workspace_repository)
-    ],
-):
-    return WorkSpaceService(workspace_service)
 
 
 def get_notes_repository(db: Annotated[AsyncSession, Depends(get_db)]):
@@ -30,6 +24,14 @@ def get_notes_repository(db: Annotated[AsyncSession, Depends(get_db)]):
 
 def get_user_repository(db: Annotated[AsyncSession, Depends(get_db)]) -> UserRepository:
     return UserRepository(db)
+
+def get_workspace_service(
+    workspace_service: Annotated[
+        WorkSpaceRepository, Depends(get_workspace_repository)
+    ],
+    get_user_repository: Annotated[UserRepository, Depends(get_user_repository)],
+):
+    return WorkSpaceService(workspace_service, get_user_repository)
 
 
 def get_user_service(
@@ -54,3 +56,6 @@ def get_current_user(token: Annotated[str, Depends(oauth_schema)]):
         )
 
     return user_id
+
+
+
